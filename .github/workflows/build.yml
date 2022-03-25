@@ -26,13 +26,13 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.ASDC_PACKAGES }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v2
         with:
           context: .
-          tags: ghcr.io/auscalabledronecloud/driver:470.57.02-fedora32
+          tags: ghcr.io/auscalabledronecloud/driver:510.47.03-fedora32
           push: true
 

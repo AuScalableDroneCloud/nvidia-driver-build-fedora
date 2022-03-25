@@ -17,7 +17,7 @@ See <https://github.com/NVIDIA/nvidia-docker/wiki/Driver-containers-(Beta>)
 Building and running locally:
 
 ```
-DRIVER_VERSION=450.51.05
+DRIVER_VERSION=510.47.03
 FEDORA_VERSION=32
 sudo podman build \
     --build-arg FEDORA_VERSION=$FEDORA_VERSION \

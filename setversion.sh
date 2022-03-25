@@ -8,10 +8,10 @@
 #OLD_KERNEL_REV=200
 #KERNEL_REV=200
 
-OLD_NVIDIA_DRIVER_VERSION=460.32.03
-NVIDIA_DRIVER_VERSION=470.57.02
+OLD_NVIDIA_DRIVER_VERSION=470.57.02
+NVIDIA_DRIVER_VERSION=510.47.03
 
-for file in Dockerfile .github/workflows/build.yml
+for file in Dockerfile .github/workflows/build.yml README.md
 do
   echo $file
   #sed -i "s/${OLD_KERNEL_VERSION}\(.\)${OLD_KERNEL_REV}/${KERNEL_VERSION}\1${KERNEL_REV}/g" $file

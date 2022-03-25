@@ -1,4 +1,8 @@
-#! /bin/bash -x
+#! /bin/bash
+
+#OK 25/3/22 Added changes from here...
+#https://gitlab.com/container-toolkit-fcos/driver/-/tree/fedora/fedora
+
 # Copyright (c) 2018, NVIDIA CORPORATION. All rights reserved.
 
 set -eu
@@ -53,6 +57,7 @@ _install_prerequisites() (
     KERNEL_RPM_VERSION=${KERNEL_VERSION%-*}
     KERNEL_RPM_RELEASE=${KERNEL_VERSION%.*}
     KERNEL_RPM_RELEASE=${KERNEL_RPM_RELEASE#*-}
+    KERNEL_OS_VERSION=${KERNEL_RPM_RELEASE#*\.}
     KERNEL_RPM_ARCH=${KERNEL_VERSION##*.}
 
     echo "Installing Linux kernel headers..."
@@ -101,22 +106,29 @@ _install_prerequisites() (
     depmod ${KERNEL_VERSION}
 
     echo "Generating Linux kernel version string..."
+
     extract-vmlinux ./lib/modules/${KERNEL_VERSION}/vmlinuz | strings | grep -E '^Linux version' | sed 's/^\(.*\)\s\+(.*)$/\1/' > version
     if [ -z "$(<version)" ]; then
-        echo "Could not locate Linux kernel version string" >&2
-        return 1
+        strings ./lib/modules/${KERNEL_VERSION}/vmlinuz | grep 'gcc (GCC)' > version
+        # Example:
+        # 5.11.20-300.fc34.x86_64 (mockbuild@bkernel01.iad2.fedoraproject.org) (gcc (GCC) 11.1.1 20210428 (Red Hat 11.1.1-1), GNU ld version 2.35.1-41.fc34) #1 SMP Wed May 12 12:45:10 UTC 2021
+        if [ -z "$(<version)" ]; then
+            echo "Could not locate Linux kernel version string" >&2
+            return 1
+        fi
     fi
+
     mv version /lib/modules/${KERNEL_VERSION}/proc
 
-    # Parse gcc version
-    # gcc_version is expected to match x.y.z
-    # current_gcc is expected to match 'gcc-x.y.z-rel.el8.x86_64
-    local gcc_version=$(cat /lib/modules/${KERNEL_VERSION}/proc/version | grep -Eo "gcc version ([0-9\.]+)" | grep -Eo "([0-9\.]+)")
+    # Parse gcc version - targeting x.y.z-v.fc35.x86_64 format - use regexp () capture and OS VERSION ARCH accordingly.
+    local gcc_version=$(cat /lib/modules/${KERNEL_VERSION}/proc/version | grep -Eo "Red Hat ([0-9\.-]+)"  | grep -Eo "([0-9\.-]+)").${KERNEL_OS_VERSION}.${KERNEL_RPM_ARCH}
     local current_gcc=$(rpm -qa gcc)
     echo "kernel requires gcc version: 'gcc-${gcc_version}', current gcc version is '${current_gcc}'"
 
     if [[ "gcc-${gcc_version}" != "${current_gcc}"* ]]; then
-        dnf install -q -y "gcc-${gcc_version}"
+        # Sometimes there are -v differences in the x.y.z-v gcc versions available.
+        # So we try, but allow failure of installation of precise gcc version.
+        dnf install -q -y "gcc-${gcc_version}" || true
     fi
 )
 
@@ -323,6 +335,11 @@ EOF
 }
 
 _shutdown() {
+    if [ -f /var/log/nvidia-installer.log ]; then
+    echo ***
+    cat /var/log/nvidia-installer.log
+    echo ***
+    fi
     if _unload_driver; then
         _unmount_rootfs
         rm -f ${PID_FILE} ${KERNEL_UPDATE_HOOK}
