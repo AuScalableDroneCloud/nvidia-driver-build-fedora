@@ -33,6 +33,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          tags: ghcr.io/auscalabledronecloud/driver:510.47.03-fedora32
+          tags: ghcr.io/auscalabledronecloud/driver:470.57.02-fedora32
           push: true
 

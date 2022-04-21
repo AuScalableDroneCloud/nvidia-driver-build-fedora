@@ -9,6 +9,7 @@ RUN dnf install -y \
         make \
         cpio \
         kmod \
+        util-linux \
         'dnf-command(download)' && \
     rm -rf /var/cache/yum/*
 
@@ -18,7 +19,7 @@ RUN curl -fsSL -o /usr/local/bin/donkey https://github.com/3XX0/donkey/releases/
 
 #ARG BASE_URL=http://us.download.nvidia.com/XFree86/Linux-x86_64
 ARG BASE_URL=https://us.download.nvidia.com/tesla
-ARG DRIVER_VERSION=510.47.03
+ARG DRIVER_VERSION=470.57.02
 ENV DRIVER_VERSION=$DRIVER_VERSION
 
 RUN ln -s /sbin/ldconfig /sbin/ldconfig.real
@@ -54,7 +55,7 @@ ARG PUBLIC_KEY=empty
 COPY ${PUBLIC_KEY} kernel/pubkey.x509
 
 ARG PRIVATE_KEY
-ARG KERNEL_VERSION=latest
+ARG KERNEL_VERSION=5.7.16
 
 LABEL io.k8s.display-name="NVIDIA Driver Container"
 LABEL name="NVIDIA Driver Container"
