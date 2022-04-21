@@ -49,6 +49,8 @@ RUN cd /tmp && \
 
 COPY nvidia-driver /usr/local/bin
 
+RUN chmod +x /usr/local/bin/nvidia-driver
+
 WORKDIR /usr/src/nvidia-$DRIVER_VERSION
 
 ARG PUBLIC_KEY=empty
@@ -68,4 +70,4 @@ LABEL description="See summary"
 COPY LICENSE /licenses/LICENSE
 COPY DRIVER-LICENSE /licenses/DRIVER-LICENSE
 
-ENTRYPOINT ["nvidia-driver", "init"]
+ENTRYPOINT ["/usr/local/bin/nvidia-driver", "init"]
