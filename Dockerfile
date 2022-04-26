@@ -1,4 +1,4 @@
-ARG FEDORA_VERSION=32
+ARG FEDORA_VERSION=35
 FROM fedora:$FEDORA_VERSION
 
 RUN dnf install -y \
@@ -57,7 +57,7 @@ ARG PUBLIC_KEY=empty
 COPY ${PUBLIC_KEY} kernel/pubkey.x509
 
 ARG PRIVATE_KEY
-ARG KERNEL_VERSION=5.7.16
+ARG KERNEL_VERSION=5.15.17
 
 LABEL io.k8s.display-name="NVIDIA Driver Container"
 LABEL name="NVIDIA Driver Container"

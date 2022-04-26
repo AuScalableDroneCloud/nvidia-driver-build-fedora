@@ -18,7 +18,14 @@ Building and running locally:
 
 ```
 DRIVER_VERSION=470.57.02
-FEDORA_VERSION=32
+FEDORA_VERSION=35
 sudo podman build --build-arg FEDORA_VERSION=$FEDORA_VERSION --build-arg DRIVER_VERSION=$DRIVER_VERSION -t docker.io/nvidia/driver:$DRIVER_VERSION-fedora$FEDORA_VERSION .
 sudo podman run --name nvidia-driver --privileged --pid=host -v /run/nvidia:/run/nvidia:shared docker.io/nvidia/driver:$DRIVER_VERSION-fedora$FEDORA_VERSION --accept-license
+```
+
+Test on ASDC node shell
+
+```
+podman pull ghcr.io/auscalabledronecloud/driver:470.57.02-fedora35
+podman run --name nvidia-driver --privileged --pid=host -v /run/nvidia:/run/nvidia:shared ghcr.io/auscalabledronecloud/driver:$DRIVER_VERSION-fedora$FEDORA_VERSION --accept-license
 ```
