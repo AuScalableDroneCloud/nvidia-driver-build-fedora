@@ -17,7 +17,7 @@ See <https://github.com/NVIDIA/nvidia-docker/wiki/Driver-containers-(Beta>)
 Building and running locally:
 
 ```
-DRIVER_VERSION=470.57.02
+DRIVER_VERSION=510.47.03
 FEDORA_VERSION=35
 sudo podman build --build-arg FEDORA_VERSION=$FEDORA_VERSION --build-arg DRIVER_VERSION=$DRIVER_VERSION -t docker.io/nvidia/driver:$DRIVER_VERSION-fedora$FEDORA_VERSION .
 sudo podman run --name nvidia-driver --privileged --pid=host -v /run/nvidia:/run/nvidia:shared docker.io/nvidia/driver:$DRIVER_VERSION-fedora$FEDORA_VERSION --accept-license
@@ -26,6 +26,6 @@ sudo podman run --name nvidia-driver --privileged --pid=host -v /run/nvidia:/run
 Test on ASDC node shell
 
 ```
-podman pull ghcr.io/auscalabledronecloud/driver:470.57.02-fedora35
+podman pull ghcr.io/auscalabledronecloud/driver:510.47.03-fedora35
 podman run --name nvidia-driver --privileged --pid=host -v /run/nvidia:/run/nvidia:shared ghcr.io/auscalabledronecloud/driver:$DRIVER_VERSION-fedora$FEDORA_VERSION --accept-license
 ```
